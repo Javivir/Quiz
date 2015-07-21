@@ -13,13 +13,21 @@ exports.load = function(req, res, next, quizId) {
 }
 
 
-// GET /  quizes 
+// GET /quizes?search=texto_a_buscar
 exports.index = function (req,res) {
-	models.Quiz.findAll().then(
-		function(quizes){
-			res.render('quizes/index.ejs', { quizes:quizes});
-		}
-	).catch(function(error) { next(error);})
+	var texto_a_buscar = req.query.search || '';
+	var where = {};
+
+	if(req.query.search) {
+	    search = '%' + texto_a_buscar.trim().replace(/\s+/g,'%') + '%';
+	    where = {where: ['lower(pregunta) like lower(?)', search], order: 'pregunta ASC'};
+ 	 }
+
+	models.Quiz.findAll(where).then(
+	    function(quizes) {
+			res.render('quizes/index.ejs', {quizes: quizes, search: texto_a_buscar});
+	    }
+	).catch(function(error) {next(error);})
 };
 
 
