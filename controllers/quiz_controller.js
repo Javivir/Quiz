@@ -50,7 +50,7 @@ exports.answer = function(req, res) {
 	res.render('quizes/answer', { quiz:req.quiz, respuesta: resultado, errors:[] });
 };
 
-// GET /  quizes / :id / edit                                   // **********   REVISAR      ***************
+// GET /  quizes / :id / edit                                   
 exports.edit = function(req, res) {
 	var quiz = req.quiz;
 	res.render('quizes/edit', {quiz:quiz, errors:[] });

@@ -21,7 +21,7 @@ app.use(partials());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('Quiz 2015'));  //semilla aleatoria pesonalizable,cifrar cookie
 app.use(session());
 app.use(methodOverride('_method'));
@@ -36,6 +36,19 @@ app.use(function(req, res, next) {
 
 	// hacer visible req.session en las vistas
 	res.locals.session = req.session;
+	next();
+});
+
+app.use(function(req, res, next) {
+	//logout automatico
+	var timeAhora = new Date().getTime();
+	if( req.session.user && req.session.timeSesion < timeAhora - 120000){
+			//console.log('***********  FUERA  *********** ');
+		req.session.errors = [{"message": 'Sesion caducada'}];
+		delete req.session.user;
+	} else {
+		req.session.timeSesion = new Date().getTime();
+	}
 	next();
 });
 
